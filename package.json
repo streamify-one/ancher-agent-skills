@@ -1,0 +1,52 @@
+{
+  "name": "@ancher-ai/agent-skills",
+  "version": "0.1.0",
+  "description": "Ancher skills + MCP setup for coding agents (Claude Code, OpenAI Codex, Cursor). One repo that is a Claude Code plugin marketplace, a Codex plugin marketplace, and a Cursor integration \u2014 plus a cross-agent installer.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "homepage": "https://ancher.ai",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/streamify-one/ancher-agent-skills.git"
+  },
+  "bin": {
+    "ancher-agent-skills": "./bin/cli.mjs"
+  },
+  "files": [
+    "plugins",
+    ".claude-plugin",
+    ".agents",
+    ".cursor",
+    "scripts",
+    "bin",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "check": "node scripts/check.mjs",
+    "test": "node --test",
+    "lint": "biome ci .",
+    "format": "biome format --write .",
+    "fix": "biome check --write .",
+    "assert-pack": "node scripts/assert-pack.mjs",
+    "validate": "node scripts/check.mjs && node --test && biome ci ."
+  },
+  "keywords": [
+    "ancher",
+    "mcp",
+    "claude-code",
+    "codex",
+    "cursor",
+    "agent-skills",
+    "plugin"
+  ],
+  "devDependencies": {
+    "@biomejs/biome": "catalog:"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

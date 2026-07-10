@@ -1,0 +1,13 @@
+{
+  "name": "ancher",
+  "displayName": "Ancher",
+  "version": "0.1.0",
+  "description": "Use Ancher — your personal knowledge base and research assistant — from Cursor: capture, search, read, organize, and reason over your notes, collections, tags, and artifacts. Bundles the Ancher skills with the hosted Ancher MCP server.",
+  "author": { "name": "Ancher", "email": "hello@ancher.ai" },
+  "homepage": "https://ancher.ai",
+  "repository": "https://github.com/streamify-one/ancher-agent-skills",
+  "license": "Apache-2.0",
+  "keywords": ["ancher", "notes", "knowledge-base", "research", "mcp"],
+  "category": "productivity",
+  "skills": "./skills/"
+}

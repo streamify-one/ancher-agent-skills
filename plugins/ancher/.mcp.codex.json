@@ -1,0 +1,7 @@
+{
+  "mcp_servers": {
+    "ancher": {
+      "url": "https://api.ancher.ai/mcp"
+    }
+  }
+}

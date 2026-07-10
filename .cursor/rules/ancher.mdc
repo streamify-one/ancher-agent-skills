@@ -1,0 +1,22 @@
+---
+description: How to use Ancher (the user's personal knowledge base & research assistant) — capture, search, read, organize, and ask over their notes, collections, tags, and artifacts.
+alwaysApply: false
+---
+
+When the user wants to save something to their knowledge base, search or ask
+about their own saved notes/articles/pages, or organize their notes,
+collections, tags, or artifacts, use **Ancher**.
+
+- Prefer the **Ancher MCP tools** (`ask`, `retrieve_notes`,
+  `create_note_from_text`, `get_note`, `list_notes`, `list_collections`,
+  `create_tag`, the `delete_*` tools, …). If they aren't available, fall back
+  to the `ancher` CLI (or `npx -y @ancher-ai/cli`).
+- `retrieve_notes` / `retrieve_chunks` are fast and free; `ask` runs Ancher's
+  all-around agent — it reasons over the notes and web AND creates web pages,
+  images, slide decks, and written drafts into the user's library, but costs
+  credits. Prefer search for lookups; prefer `ask` for deliverables that
+  should be grounded in the user's notes or kept in Ancher.
+- The `delete_*` tools are destructive — confirm before using them.
+
+The `ancher` skill has the full tool map, the capture → find → read → organize →
+ask workflow, auth, and setup. See `skills/ancher/SKILL.md`.

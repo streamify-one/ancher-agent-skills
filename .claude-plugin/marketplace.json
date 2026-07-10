@@ -1,0 +1,14 @@
+{
+  "name": "ancher-agent-skills",
+  "description": "Ancher skills + hosted MCP server for coding agents.",
+  "owner": { "name": "Ancher", "url": "https://ancher.ai" },
+  "plugins": [
+    {
+      "name": "ancher",
+      "source": "./plugins/ancher",
+      "description": "Ancher — personal knowledge base & research assistant. Skills + hosted MCP server.",
+      "category": "productivity",
+      "homepage": "https://ancher.ai"
+    }
+  ]
+}

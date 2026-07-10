@@ -1,0 +1,6 @@
+{
+  "ancher": {
+    "type": "http",
+    "url": "https://api.ancher.ai/mcp"
+  }
+}
