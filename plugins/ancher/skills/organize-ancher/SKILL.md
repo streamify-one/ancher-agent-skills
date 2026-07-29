@@ -63,7 +63,7 @@ Use the matching resource group or the raw passthrough:
 
 ```bash
 ancher help collections            # discover actions
-ancher api POST collections/ --data '{"name":"Reading list"}'
+ancher api POST collections/ --body '{"name":"Reading list"}'
 ancher api GET  "tags/?limit=100"
 ```
 

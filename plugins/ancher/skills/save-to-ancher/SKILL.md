@@ -33,7 +33,7 @@ create_note_from_text(text="Meeting takeaways: …", comment="from standup")
 create_note_from_message(conversation_id="…", message_id="…")
 ```
 
-CLI fallback: `ancher api POST notes/text --data '{"text":"…"}'` (or the
+CLI fallback: `ancher api POST notes/text --body '{"text":"…"}'` (or the
 `notes` resource group — `ancher help notes`).
 
 ## The parsing lifecycle — this is async

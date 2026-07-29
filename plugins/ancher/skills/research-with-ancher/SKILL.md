@@ -45,7 +45,7 @@ full context (see the [ancher](../ancher/SKILL.md) READ pattern).
 To **browse** rather than search, use `list_notes` (filter by status or tag
 with criteria objects, e.g. `status={"eq": "ready"}`), or
 `list_collection_notes(collection_id)` for one collection. CLI:
-`ancher api POST retrievals --data '{"query":"…"}'` or
+`ancher api POST retrievals --body '{"query":"…"}'` or
 `ancher api GET "notes/?limit=20"`.
 
 ## `ask` — the Ancher agent (reasons AND creates; costs credits)

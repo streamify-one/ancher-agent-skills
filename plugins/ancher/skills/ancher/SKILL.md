@@ -144,9 +144,9 @@ ancher whoami                              # who am I / is auth working
 ancher chat "<question>"                   # == the `ask` tool (streams the reply)
 ancher chat "<follow-up>" --conversation <id>
 ancher api GET  "notes/?limit=5"           # browse notes (== list_notes)
-ancher api POST retrievals --data '{"query":"..."}'   # semantic search (== retrieve_notes)
+ancher api POST retrievals --body '{"query":"..."}'   # semantic search (== retrieve_notes)
 ancher api GET  "notes/<id>"               # read a note (== get_note)
-ancher api POST notes/text --data '{"text":"..."}'    # capture text (== create_note_from_text)
+ancher api POST notes/text --body '{"text":"..."}'    # capture text (== create_note_from_text)
 ancher help <resource>                     # discover a resource's actions
 ```
 
