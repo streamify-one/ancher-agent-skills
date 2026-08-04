@@ -1,6 +1,6 @@
 {
   "name": "@ancher-ai/agent-skills",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Ancher skills + MCP setup for coding agents (Claude Code, OpenAI Codex, Cursor). One repo that is a Claude Code plugin marketplace, a Codex plugin marketplace, and a Cursor integration \u2014 plus a cross-agent installer.",
   "license": "Apache-2.0",
   "type": "module",
@@ -29,6 +29,7 @@
     "format": "biome format --write .",
     "fix": "biome check --write .",
     "assert-pack": "node scripts/assert-pack.mjs",
+    "package": "node scripts/assert-pack.mjs && pnpm pack",
     "validate": "node scripts/check.mjs && node --test && biome ci ."
   },
   "keywords": [

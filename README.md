@@ -2,31 +2,151 @@
 
 [![npm](https://img.shields.io/npm/v/@ancher-ai/agent-skills)](https://www.npmjs.com/package/@ancher-ai/agent-skills)
 
-Teach your coding agent to use **[Ancher](https://ancher.ai)** — your personal
-knowledge base and research assistant. This one repo is, at the same time, a
-**Claude Code** plugin marketplace, an **OpenAI Codex** plugin marketplace, and a
-**Cursor** plugin — bundling a small set of skills with the hosted Ancher MCP
-server. Installing it gives the agent both the *know-how* (skills) and the
-*tools* (MCP), in one step.
+Give Claude Code, Codex, or Cursor access to your **[Ancher](https://ancher.ai)** knowledge base. One install adds:
 
-- **Skills** teach the agent when and how to capture, search, read, organize, and
-  reason over your Ancher notes, collections, tags, and artifacts.
-- **The MCP server** (`https://api.ancher.ai/mcp`) gives it the tools to actually
-  do it — `ask`, `retrieve_notes`, `create_note_from_text`, and more. It's hosted, so there's
-  nothing to run locally.
+- **Skills** — instructions that tell the AI when and how to save, search, research, and organize Ancher content.
+- **MCP tools** — the hosted Ancher connection that lets the AI actually perform those actions.
 
-The Ancher [CLI](https://www.npmjs.com/package/@ancher-ai/cli) (`@ancher-ai/cli`) and
-[SDK](https://www.npmjs.com/package/@ancher-ai/sdk) (`@ancher-ai/sdk`) are the
-human/programmatic layers; this repo is the *agent* layer.
+## Start here
 
-## Install
+Run this on the computer where you use your coding agent:
 
-Pick your agent. Every path below is free of any local server — the MCP is
-hosted. You'll need Ancher auth (see [Authentication](#authentication)).
+```bash
+npx -y @ancher-ai/agent-skills install
+```
+
+The installer finds Claude Code, Codex, and Cursor, then configures the ones it finds. It does not install a local server or require an API token.
+
+Then sign in to Ancher for the agent you use. See [sign in to Ancher](#sign-in-to-ancher) below.
+
+After signing in, restart Codex or open a new agent session, then ask something like:
+
+> Search my Ancher notes for the decisions about this project.
+
+### What `-y` means
+
+`npx` normally asks permission before temporarily downloading a package it has not installed yet. `-y` answers that **npx download prompt** automatically.
+
+It does **not** approve Ancher actions, grant the AI access to your content, or send a token. Omit `-y` if you prefer to confirm the download yourself:
+
+```bash
+npx @ancher-ai/agent-skills install
+```
+
+## What you and your AI can do
+
+| You ask for | The AI can use Ancher to |
+|---|---|
+| “Save this discussion” | Create a note from text, a URL, or an artifact. |
+| “Find my notes about X” | Search notes and retrieve the relevant source material. |
+| “Research this using my knowledge base” | Reason over your Ancher content and cite the sources it used. |
+| “Organize these notes” | Work with collections and tags. |
+
+The AI selects the right Ancher skill when your request matches it. You can also invoke a skill directly: Claude Code and Cursor use `/skill-name`; Codex uses `$skill-name`.
+
+## Install options
+
+```bash
+# Configure only specific agents.
+npx -y @ancher-ai/agent-skills install --agent claude,codex
+
+# Preview every file and command without changing anything.
+npx -y @ancher-ai/agent-skills install --print
+
+# Add skills to the current repository instead of your user profile.
+npx -y @ancher-ai/agent-skills install --project
+
+# Remove Ancher skills and MCP configuration again.
+npx -y @ancher-ai/agent-skills uninstall
+```
+
+The default installation is user-wide. It writes each agent's skills to its native global directory and configures the hosted MCP server. With `--project`, skills are written into the current repository; Codex MCP configuration remains user-wide, so the installer prints the one command you need to run.
+
+## Sign in to Ancher
+
+The default is browser-based OAuth. You do not need an API token. First sign in to your Claude Code, Codex, or Cursor account as usual, then connect that agent to your Ancher account once.
 
 ### Claude Code
 
+1. Start Claude Code in any project:
+
+   ```bash
+   claude
+   ```
+
+2. In the Claude Code session, run `/mcp`.
+3. Select **ancher**, choose its authentication option, and finish the browser sign-in.
+4. Return to Claude Code and ask it to search or save an Ancher note.
+
+If the browser does not open, copy the displayed URL into a browser. Confirm that the server is configured with:
+
 ```bash
+claude mcp list
+```
+
+[Claude Code’s MCP authentication guide](https://docs.anthropic.com/en/docs/claude-code/mcp) explains the `/mcp` OAuth flow.
+
+### Codex
+
+Run the following after the installer finishes:
+
+```bash
+codex mcp login ancher
+```
+
+Complete the browser sign-in, restart Codex, and start a new session. Check that the server is available with:
+
+```bash
+codex mcp list
+```
+
+### Cursor
+
+Open Cursor and start an Agent chat. The first Ancher tool use prompts you to connect and complete the browser sign-in. Approve the request, return to Cursor, and retry your request.
+
+If you use the Cursor Agent CLI instead, authenticate the configured MCP server directly:
+
+```bash
+cursor-agent mcp login ancher
+cursor-agent mcp list
+```
+
+[Cursor’s MCP documentation](https://docs.cursor.com/context/model-context-protocol) covers OAuth connections and MCP configuration.
+
+### CI and non-interactive environments
+
+For CI or other non-interactive environments, create an API token in **Ancher → Settings → API**, set it as `ANCHER_API_TOKEN`, then install with `--token`. The installer references the environment-variable name in each agent's configuration; do not place a token directly in a command.
+
+```bash
+export ANCHER_API_TOKEN=...
+npx -y @ancher-ai/agent-skills install --agent codex --token
+```
+
+## CLI and agent skills are independent
+
+This package configures AI agents. It works without the Ancher CLI because the agent uses the hosted MCP server.
+
+Install the CLI separately when **you** want to work from a terminal:
+
+```bash
+npm install -g @ancher-ai/cli
+ancher login
+```
+
+You can also install this installer globally if you prefer a persistent command:
+
+```bash
+npm install -g @ancher-ai/agent-skills
+ancher-agent-skills install
+```
+
+## Native plugin installation
+
+The one-command installer is the recommended path. You may instead install the native plugin marketplace entry.
+
+### Claude Code
+
+```text
 /plugin marketplace add streamify-one/ancher-agent-skills
 /plugin install ancher@ancher-agent-skills
 ```
@@ -35,126 +155,31 @@ hosted. You'll need Ancher auth (see [Authentication](#authentication)).
 
 ```bash
 codex plugin marketplace add streamify-one/ancher-agent-skills
-# then run `codex`, open `/plugins`, and install "ancher"
 ```
 
-Or just the MCP server:
+Then start `codex`, open `/plugins`, install **ancher**, and begin a new session.
 
-```bash
-codex mcp add ancher --url https://api.ancher.ai/mcp
-codex mcp login ancher      # browser OAuth (or use a token — see Authentication)
-```
+## Included skills
 
-### Cursor
-
-One click (adds the MCP server; you'll be prompted to log in):
-
-[![Add to Cursor](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en/install-mcp?name=ancher&config=eyJ1cmwiOiJodHRwczovL2FwaS5hbmNoZXIuYWkvbWNwIn0%3D)
-
-For the skills too, install the plugin from **Cursor → Settings → Plugins**
-(point it at this repo), or use the cross-agent installer below.
-
-### Any agent (cross-agent installer)
-
-Configures whichever of Claude Code / Codex / Cursor it finds, each in its native
-format:
-
-```bash
-npx @ancher-ai/agent-skills install            # auto-detect installed agents
-npx @ancher-ai/agent-skills install --agent cursor,codex
-npx @ancher-ai/agent-skills install --project  # write into ./ (commit to a repo)
-npx @ancher-ai/agent-skills install --print    # dry run
-npx @ancher-ai/agent-skills uninstall
-```
-
-## Authentication
-
-**Default: OAuth — no token needed.** The Ancher MCP server supports OAuth with
-dynamic client registration, so your agent logs you in through the browser on
-first use, with nothing to pre-provision. Claude Code and Cursor run the flow
-automatically; Codex needs one command, `codex mcp login ancher`.
-
-**CI / non-interactive: a bearer token.** Create an API token in the Ancher app
-(**app.ancher.ai → Settings → API**), set `export ANCHER_API_TOKEN=…`, and use
-the bearer-token config variant. The installer picks this form automatically when
-`ANCHER_API_TOKEN` is set (or pass `--token`); it injects `${ANCHER_API_TOKEN}`
-into the `Authorization` header for Claude/Cursor and references it via
-`bearer_token_env_var` for Codex.
-
-## What's inside
-
-Four skills (`plugins/ancher/skills/`), authored once in the portable
-[Agent Skills](https://agentskills.io) format and read verbatim by Claude Code,
-Codex, and Cursor:
-
-| Skill | Covers |
+| Skill | Use it for |
 |---|---|
-| **ancher** | Overview, the full tool map, MCP↔CLI routing, auth, and the capture → find → read → organize → ask workflow. The entry point. |
-| **save-to-ancher** | Capturing text, URLs, conversations, and artifacts; the async parsing lifecycle; retrying failed parses. |
-| **research-with-ancher** | `retrieve_notes`/`retrieve_chunks` (fast, free) vs the `ask` agent (reasons over notes + web and creates web pages, images, slide decks, and drafts; costs credits); when to delegate generation to Ancher; quoting sources. |
-| **organize-ancher** | Collections and tags, the replace-all-tags gotcha, membership changes, safe deletion. |
+| `ancher` | The overall Ancher workflow and tool map. |
+| `save-to-ancher` | Saving text, URLs, conversations, and files. |
+| `research-with-ancher` | Retrieving sources and researching with Ancher. |
+| `organize-ancher` | Collections, tags, membership, and safe deletion. |
 
-## Repository layout
+## Development and releases
 
-```
-agent-skills/
-├── .claude-plugin/marketplace.json     # Claude Code marketplace catalog
-├── .agents/plugins/marketplace.json    # Codex + Cursor marketplace catalog
-├── plugins/ancher/                     # the plugin (shared by all three agents)
-│   ├── .claude-plugin/plugin.json
-│   ├── .codex-plugin/plugin.json
-│   ├── .cursor-plugin/plugin.json
-│   ├── skills/<name>/SKILL.md          # one skill set, read by all three
-│   ├── .mcp.json                       # Claude shape  (type/url/headers, ${VAR})
-│   ├── mcp.json                        # Cursor shape  (mcpServers, ${env:VAR})
-│   └── .mcp.codex.json                 # Codex shape   (url + bearer_token_env_var)
-├── .cursor/{mcp.json,rules/ancher.mdc} # project-scoped Cursor templates
-├── bin/cli.mjs                         # the npx cross-agent installer
-└── scripts/check.mjs                   # consistency gate (run in CI)
-```
-
-Why three MCP files? The three agents genuinely disagree on the format — field
-names and env-var syntax differ — so each gets its own. The skills, by contrast,
-are byte-identical across all three. See
-[docs/DESIGN.md](https://github.com/streamify-one/ancher-agent-skills/blob/main/docs/DESIGN.md)
-for the full rationale.
-
-## Development
-
-Development happens in a private monorepo (this repository is its read-only
-mirror — see *Contributing* below), where CI runs the package gates on every
-change. The package itself uses **pnpm** and plain Node:
+The source of truth is a private monorepo; this repository is a read-only public mirror.
 
 ```bash
-pnpm install        # installs Biome (the only devDependency)
-pnpm run validate   # domain check + tests + Biome (what CI runs)
-
-pnpm run check      # scripts/check.mjs: skills, MCP configs, manifests, marketplaces
-pnpm test           # node --test (installer + validator)
-pnpm run lint       # Biome (read-only)      | pnpm run fix formats + autofixes
-pnpm run assert-pack # assert the npm tarball ships exactly the intended files
+pnpm install
+pnpm run validate
+pnpm run assert-pack
 ```
 
-The domain validator fails if a skill is missing frontmatter, the three MCP
-configs disagree on the endpoint, or a marketplace source doesn't resolve to
-the plugin.
-
-## Releasing
-
-Publishing to npm happens from the monorepo via GitHub Actions + **OIDC
-trusted publishing** (no long-lived token): maintainers cut a release tagged
-`skills-vX.Y.Z`, and the publish workflow verifies the version, re-runs the
-gates, and publishes with provenance. Details in
-[docs/RELEASING.md](https://github.com/streamify-one/ancher-agent-skills/blob/main/docs/RELEASING.md).
+Publishing uses GitHub Actions with npm trusted publishing. Maintainers release a matching `skills-vX.Y.Z` GitHub Release. See [docs/RELEASING.md](docs/RELEASING.md) for details.
 
 ## License
 
 Apache-2.0.
-
-## Contributing
-
-This repository is a **read-only mirror**: the source of truth lives in a
-private monorepo, and every push here is an identity-scrubbed snapshot
-published by CI. Issues and discussions are welcome right here; pull requests
-can't be merged directly, but maintainers will import patches — open the PR to
-propose the change and it will be applied upstream.
