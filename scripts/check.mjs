@@ -94,6 +94,28 @@ const claudeSrc = claudeMkt.plugins?.[0]?.source
 if (claudeSrc !== './plugins/ancher')
   err(`claude marketplace source "${claudeSrc}" != ./plugins/ancher`)
 
+// The declared `skills` array exists for the `skills` CLI (vercel-labs/skills,
+// `npx skills add`): it puts us on that CLI's documented plugin-manifest
+// discovery instead of its recursive fallback scan, since plugins/ancher/skills
+// is not one of its standard discovery roots. Claude Code would not notice the
+// list going stale — for a non-marketplace-root `source` the field only ADDS to
+// the default skills/ scan — so pin it to the directory listing here. Without
+// this, a fifth skill lands invisible to `npx skills add` with nothing failing.
+const declaredSkills = claudeMkt.plugins?.[0]?.skills
+const expectedSkills = skills.map((d) => `./skills/${d}`).sort()
+if (!Array.isArray(declaredSkills)) {
+  err('claude marketplace: plugin entry missing a "skills" array')
+} else {
+  // Compare structurally rather than on a delimiter-joined string: a directory
+  // name may legally contain whatever delimiter we picked, which would let two
+  // different lists compare equal.
+  const sortedDeclared = [...declaredSkills].sort()
+  if (JSON.stringify(sortedDeclared) !== JSON.stringify(expectedSkills))
+    err(
+      `claude marketplace skills ${JSON.stringify(sortedDeclared)} != on-disk ${JSON.stringify(expectedSkills)}`,
+    )
+}
+
 const agentsMkt = readJson(join(ROOT, '.agents', 'plugins', 'marketplace.json'))
 const agentsSrc = agentsMkt.plugins?.[0]?.source?.path
 if (agentsSrc !== './plugins/ancher')

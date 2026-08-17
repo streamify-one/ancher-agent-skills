@@ -11,6 +11,38 @@ Codex**, and **Cursor**. "Use Ancher" means two things the agent needs together:
 1. **Knowledge** — *when* to reach for Ancher and *how* its tools compose (skills).
 2. **Tools** — the actual capability to act (the Ancher MCP server).
 
+## Revision (2026-08-17): `npx skills add` is the recommended install
+
+The two sections below record the original decision and still describe what
+this repo *builds*. What changed is which install we **recommend first** in
+public docs (VITA-1371).
+
+`npx -y skills add streamify-one/ancher-agent-skills` — the `skills` CLI
+(vercel-labs/skills) — now leads the docs, the README, and the quickstart. It
+installs skills into 70+ agents where our own installer reaches three, and it is
+the verb this ecosystem has standardized on. It writes **no MCP config**, so the
+recommended path pairs it with `@ancher-ai/cli` + `ancher login` and relies on
+the routing ladder described below, which already treats the CLI as a
+first-class backend.
+
+`npx -y @ancher-ai/agent-skills install` is unchanged and is now presented as
+"Install with MCP tools instead" for Claude Code, Codex, and Cursor.
+
+**This narrows the "never a bare skills package" rule below rather than
+deleting it.** That rule still governs what *this package* ships: it never
+becomes a skills-only installer, and it never gains a `postinstall`. What we
+concede is that a third-party bare-skills installer is now the recommended
+front door, with the CLI supplying the capability the MCP would otherwise
+carry.
+
+**Accepted cost, stated plainly:** a new Claude Code/Codex/Cursor user who
+follows the recommended path gets skills without MCP tools — the agent shells
+out to the CLI instead of calling structured tools, and needs a global npm
+install plus a login. That is a worse experience than the one-command MCP
+install *for those three agents*, traded for one install story that works
+everywhere. If that trade stops paying, the fix is to make the recommended path
+configure MCP too, not to re-demote `skills add`.
+
 ## The central decision: bundle the MCP with the skills
 
 The load-bearing dependency is the **MCP server, not the CLI.** Ancher's MCP is

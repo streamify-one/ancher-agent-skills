@@ -2,35 +2,44 @@
 
 [![npm](https://img.shields.io/npm/v/@ancher-ai/agent-skills)](https://www.npmjs.com/package/@ancher-ai/agent-skills)
 
-Give Claude Code, Codex, or Cursor access to your **[Ancher](https://ancher.ai)** knowledge base. One install adds:
+Give your coding agent access to your **[Ancher](https://ancher.ai)** knowledge base. Ancher needs two things inside an agent:
 
 - **Skills** — instructions that tell the AI when and how to save, search, research, and organize Ancher content.
-- **MCP tools** — the hosted Ancher connection that lets the AI actually perform those actions.
+- **A way to reach Ancher** — the `ancher` CLI, or the hosted Ancher MCP server.
 
 ## Start here
 
 Run this on the computer where you use your coding agent:
 
 ```bash
-npx -y @ancher-ai/agent-skills install
+npx -y skills add streamify-one/ancher-agent-skills
 ```
 
-The installer finds Claude Code, Codex, and Cursor, then configures the ones it finds. It does not install a local server or require an API token.
+The [`skills`](https://github.com/vercel-labs/skills) CLI installs the Ancher skills into whichever agent you use — Claude Code, Codex, Cursor, OpenCode, Zed, Windsurf, Gemini CLI, GitHub Copilot, and 70 more.
 
-Then sign in to Ancher for the agent you use. See [sign in to Ancher](#sign-in-to-ancher) below.
+It installs skills and nothing else, so give the agent a way to reach Ancher. The CLI requires **Node 24+**:
 
-After signing in, restart Codex or open a new agent session, then ask something like:
+```bash
+npm install -g @ancher-ai/cli
+ancher login
+```
+
+`ancher login` runs a browser sign-in once and saves the session locally; the skills call the CLI from then on. Confirm it worked with `ancher whoami`.
+
+Open a new agent session, then ask something like:
 
 > Search my Ancher notes for the decisions about this project.
 
+`skills` is a third-party tool maintained by Vercel Labs, not by Ancher.
+
 ### What `-y` means
 
-`npx` normally asks permission before temporarily downloading a package it has not installed yet. `-y` answers that **npx download prompt** automatically.
+`npx` normally asks permission before temporarily downloading a package it has not installed yet. `-y` answers that **npx download prompt** automatically — here and for `@ancher-ai/agent-skills` below.
 
-It does **not** approve Ancher actions, grant the AI access to your content, or send a token. Omit `-y` if you prefer to confirm the download yourself:
+It does **not** approve Ancher actions, grant the AI access to your content, or send a token. Omit it if you prefer to confirm the download yourself:
 
 ```bash
-npx @ancher-ai/agent-skills install
+npx skills add streamify-one/ancher-agent-skills
 ```
 
 ## What you and your AI can do
@@ -44,7 +53,19 @@ npx @ancher-ai/agent-skills install
 
 The AI selects the right Ancher skill when your request matches it. You can also invoke a skill directly: Claude Code and Cursor use `/skill-name`; Codex uses `$skill-name`.
 
-## Install options
+## Install with MCP tools instead
+
+On Claude Code, Codex, and Cursor you can have the agent talk to the hosted Ancher MCP server directly — structured tools rather than shelling out to the CLI. This package configures both halves in one command:
+
+```bash
+npx -y @ancher-ai/agent-skills install
+```
+
+The installer finds Claude Code, Codex, and Cursor, then configures the ones it finds. It does not install a local server or require an API token. Then sign in to Ancher for the agent you use — see [sign in to Ancher](#sign-in-to-ancher) below.
+
+Do not run both installers. They write the same skill directories (`~/.claude/skills`, `~/.codex/skills`, `~/.cursor/skills`) under the same skill names, so whichever runs last wins.
+
+### Install options
 
 ```bash
 # Configure only specific agents.
@@ -64,7 +85,7 @@ The default installation is user-wide. It writes each agent's skills to its nati
 
 ## Sign in to Ancher
 
-The default is browser-based OAuth. You do not need an API token. First sign in to your Claude Code, Codex, or Cursor account as usual, then connect that agent to your Ancher account once.
+These steps apply when you installed with `@ancher-ai/agent-skills` above; the `skills` CLI path signs in once with `ancher login` instead. The default is browser-based OAuth. You do not need an API token. First sign in to your Claude Code, Codex, or Cursor account as usual, then connect that agent to your Ancher account once.
 
 ### Claude Code
 
@@ -124,9 +145,9 @@ npx -y @ancher-ai/agent-skills install --agent codex --token
 
 ## CLI and agent skills are independent
 
-This package configures AI agents. It works without the Ancher CLI because the agent uses the hosted MCP server.
+The [recommended install](#start-here) uses the CLI as the agent's backend. This package is the alternative: it configures the hosted MCP server, so the agent works without the Ancher CLI installed at all.
 
-Install the CLI separately when **you** want to work from a terminal:
+Either way, install the CLI when **you** want to work from a terminal yourself:
 
 ```bash
 npm install -g @ancher-ai/cli
@@ -142,7 +163,7 @@ ancher-agent-skills install
 
 ## Native plugin installation
 
-The one-command installer is the recommended path. You may instead install the native plugin marketplace entry.
+You may instead install the native plugin marketplace entry.
 
 ### Claude Code
 
