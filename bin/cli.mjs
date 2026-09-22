@@ -30,10 +30,10 @@ const HOME = homedir()
 const codexHome = () => process.env.CODEX_HOME || join(HOME, '.codex')
 
 const c = (code, s) => (process.stdout.isTTY ? `\x1b[${code}m${s}\x1b[0m` : s)
-const ok = (s) => console.log(`${c('32', '✓')} ${s}`)
-const info = (s) => console.log(`  ${s}`)
-const warn = (s) => console.log(`${c('33', '!')} ${s}`)
-const head = (s) => console.log(`\n${c('1', s)}`)
+const ok = s => console.log(`${c('32', '✓')} ${s}`)
+const info = s => console.log(`  ${s}`)
+const warn = s => console.log(`${c('33', '!')} ${s}`)
+const head = s => console.log(`\n${c('1', s)}`)
 
 // ---- args ------------------------------------------------------------------
 
@@ -60,8 +60,8 @@ function parseArgs(argv) {
 
 function selectedAgents(flags) {
   if (flags.agent) {
-    const chosen = flags.agent.split(',').map((s) => s.trim().toLowerCase())
-    const bad = chosen.filter((a) => !AGENTS.includes(a))
+    const chosen = flags.agent.split(',').map(s => s.trim().toLowerCase())
+    const bad = chosen.filter(a => !AGENTS.includes(a))
     if (bad.length) fail(`Unknown agent(s): ${bad.join(', ')}. Valid: ${AGENTS.join(', ')}`)
     return chosen
   }
@@ -73,8 +73,8 @@ function selectedAgents(flags) {
   return detected
 }
 
-const has = (bin) => spawnSync(bin, ['--version'], { stdio: 'ignore' }).status === 0
-const detect = (agent) =>
+const has = bin => spawnSync(bin, ['--version'], { stdio: 'ignore' }).status === 0
+const detect = agent =>
   ({
     claude: () => existsSync(join(HOME, '.claude')) || has('claude'),
     codex: () => existsSync(join(HOME, '.codex')) || has('codex'),
@@ -114,7 +114,7 @@ function removeSkills(destRoot, print) {
   }
 }
 
-const fail = (s) => {
+const fail = s => {
   console.error(`${c('31', 'error')} ${s}`)
   process.exit(1)
 }
@@ -157,7 +157,7 @@ function installClaude(flags) {
   const serverJson = JSON.stringify(
     flags.useToken
       ? { type: 'http', url: URL, headers: { Authorization: `Bearer \${${TOKEN_ENV}}` } }
-      : { type: 'http', url: URL },
+      : { type: 'http', url: URL }
   )
   if (flags.project) {
     const mcpPath = join(process.cwd(), '.mcp.json')
@@ -252,7 +252,7 @@ function uninstall(agents, flags) {
       dropMcpJson(mcpPath, flags.print)
       removeSkills(
         flags.project ? join(process.cwd(), '.cursor', 'skills') : join(HOME, '.cursor', 'skills'),
-        flags.print,
+        flags.print
       )
     } else if (agent === 'claude') {
       if (flags.project) dropMcpJson(join(process.cwd(), '.mcp.json'), flags.print)
@@ -261,18 +261,18 @@ function uninstall(agents, flags) {
       else info(`run: claude mcp remove ${SERVER} -s user`)
       removeSkills(
         flags.project ? join(process.cwd(), '.claude', 'skills') : join(HOME, '.claude', 'skills'),
-        flags.print,
+        flags.print
       )
     } else if (agent === 'codex') {
       if (has('codex') && !flags.print)
         spawnSync('codex', ['mcp', 'remove', SERVER], { stdio: 'ignore' })
       else
         info(
-          `run: codex mcp remove ${SERVER}  (or delete [mcp_servers.${SERVER}] from ~/.codex/config.toml)`,
+          `run: codex mcp remove ${SERVER}  (or delete [mcp_servers.${SERVER}] from ~/.codex/config.toml)`
         )
       removeSkills(
         flags.project ? join(process.cwd(), '.agents', 'skills') : join(codexHome(), 'skills'),
-        flags.print,
+        flags.print
       )
     }
     ok('removed')
@@ -319,7 +319,7 @@ function main() {
   console.log(
     `${cmd === 'install' ? 'Installing' : 'Uninstalling'} Ancher for: ${c('1', agents.join(', '))}${
       flags.project ? ' (project scope)' : ''
-    }${flags.print ? c('33', '  [print only]') : ''}`,
+    }${flags.print ? c('33', '  [print only]') : ''}`
   )
 
   if (cmd === 'uninstall') {
@@ -332,10 +332,10 @@ function main() {
       info(`1. Ensure ${TOKEN_ENV} is set:  export ${TOKEN_ENV}=<your Ancher API token>`)
     else
       info(
-        '1. First use opens a browser to log in to Ancher — no token needed (Codex: run `codex mcp login ancher`).',
+        '1. First use opens a browser to log in to Ancher — no token needed (Codex: run `codex mcp login ancher`).'
       )
     info(
-      '2. Restart the agent if needed (Codex requires a restart; Claude Code hot-reloads skills).',
+      '2. Restart the agent if needed (Codex requires a restart; Claude Code hot-reloads skills).'
     )
     info('3. Ask it to "search my Ancher notes" to confirm the tools are live.')
   }

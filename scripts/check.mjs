@@ -13,10 +13,10 @@ const PLUGIN = join(ROOT, 'plugins', 'ancher')
 const EXPECTED_URL = 'https://api.ancher.ai/mcp'
 
 const errors = []
-const err = (m) => errors.push(m)
+const err = m => errors.push(m)
 // A missing/malformed JSON file becomes a path-specific error and an empty
 // object, so every remaining check still runs and all problems report at once.
-const readJson = (p) => {
+const readJson = p => {
   try {
     return JSON.parse(readFileSync(p, 'utf8'))
   } catch (e) {
@@ -29,7 +29,7 @@ const readJson = (p) => {
 const skillsDir = join(PLUGIN, 'skills')
 const skills = []
 if (existsSync(skillsDir)) {
-  skills.push(...readdirSync(skillsDir).filter((d) => statSync(join(skillsDir, d)).isDirectory()))
+  skills.push(...readdirSync(skillsDir).filter(d => statSync(join(skillsDir, d)).isDirectory()))
   if (!skills.length) err('no skills found')
 } else {
   err(`${relative(ROOT, skillsDir)}: skills directory missing`)
@@ -102,7 +102,7 @@ if (claudeSrc !== './plugins/ancher')
 // the default skills/ scan — so pin it to the directory listing here. Without
 // this, a fifth skill lands invisible to `npx skills add` with nothing failing.
 const declaredSkills = claudeMkt.plugins?.[0]?.skills
-const expectedSkills = skills.map((d) => `./skills/${d}`).sort()
+const expectedSkills = skills.map(d => `./skills/${d}`).sort()
 if (!Array.isArray(declaredSkills)) {
   err('claude marketplace: plugin entry missing a "skills" array')
 } else {
@@ -112,7 +112,7 @@ if (!Array.isArray(declaredSkills)) {
   const sortedDeclared = [...declaredSkills].sort()
   if (JSON.stringify(sortedDeclared) !== JSON.stringify(expectedSkills))
     err(
-      `claude marketplace skills ${JSON.stringify(sortedDeclared)} != on-disk ${JSON.stringify(expectedSkills)}`,
+      `claude marketplace skills ${JSON.stringify(sortedDeclared)} != on-disk ${JSON.stringify(expectedSkills)}`
     )
 }
 

@@ -31,7 +31,7 @@ function cli(args, env = {}) {
   return r
 }
 
-const readJson = (p) => JSON.parse(readFileSync(join(dir, p), 'utf8'))
+const readJson = p => JSON.parse(readFileSync(join(dir, p), 'utf8'))
 
 test('install --project writes OAuth MCP config (no token) for Cursor and Claude', () => {
   cli(['install', '--agent', 'cursor,claude', '--project', '-y'])
@@ -59,11 +59,11 @@ test('--token switches to the bearer form with the right per-agent syntax', () =
   cli(['install', '--agent', 'cursor,claude', '--project', '--token', '-y'])
   assert.equal(
     readJson('.cursor/mcp.json').mcpServers.ancher.headers.Authorization,
-    'Bearer ${env:ANCHER_API_TOKEN}',
+    'Bearer ${env:ANCHER_API_TOKEN}'
   )
   assert.equal(
     readJson('.mcp.json').mcpServers.ancher.headers.Authorization,
-    'Bearer ${ANCHER_API_TOKEN}',
+    'Bearer ${ANCHER_API_TOKEN}'
   )
 })
 
@@ -71,7 +71,7 @@ test('ANCHER_API_TOKEN in the env auto-selects the bearer form', () => {
   cli(['install', '--agent', 'cursor', '--project', '-y'], { ANCHER_API_TOKEN: 'x' })
   assert.match(
     readJson('.cursor/mcp.json').mcpServers.ancher.headers.Authorization,
-    /ANCHER_API_TOKEN/,
+    /ANCHER_API_TOKEN/
   )
 })
 
@@ -79,7 +79,7 @@ test('install merges into an existing mcp.json without clobbering other servers'
   mkdirSync(join(dir, '.cursor'), { recursive: true })
   writeFileSync(
     join(dir, '.cursor/mcp.json'),
-    JSON.stringify({ mcpServers: { other: { url: 'https://e.com' } } }),
+    JSON.stringify({ mcpServers: { other: { url: 'https://e.com' } } })
   )
   cli(['install', '--agent', 'cursor', '--project', '-y'])
   const cfg = readJson('.cursor/mcp.json')
@@ -96,7 +96,7 @@ test('uninstall removes the ancher server and skills but leaves others', () => {
   mkdirSync(join(dir, '.cursor'), { recursive: true })
   writeFileSync(
     join(dir, '.cursor/mcp.json'),
-    JSON.stringify({ mcpServers: { other: { url: 'https://e.com' } } }),
+    JSON.stringify({ mcpServers: { other: { url: 'https://e.com' } } })
   )
   cli(['install', '--agent', 'cursor', '--project', '-y'])
   cli(['uninstall', '--agent', 'cursor', '--project', '-y'])

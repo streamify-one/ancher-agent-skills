@@ -25,12 +25,12 @@
   "scripts": {
     "check": "node scripts/check.mjs",
     "test": "node --test",
-    "lint": "biome ci .",
-    "format": "biome format --write .",
-    "fix": "biome check --write .",
+    "lint": "vp check && vp lint --deny-warnings",
+    "format": "vp fmt",
+    "fix": "vp check --fix",
     "assert-pack": "node scripts/assert-pack.mjs",
     "package": "node scripts/assert-pack.mjs && pnpm pack",
-    "validate": "node scripts/check.mjs && node --test && biome ci ."
+    "validate": "node scripts/check.mjs && node --test && pnpm lint"
   },
   "keywords": [
     "ancher",
@@ -42,7 +42,7 @@
     "plugin"
   ],
   "devDependencies": {
-    "@biomejs/biome": "catalog:"
+    "vite-plus": "catalog:"
   },
   "publishConfig": {
     "access": "public"
